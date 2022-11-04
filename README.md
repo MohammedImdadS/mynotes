@@ -1,4 +1,4 @@
-# mdapp
+# mdnotes
 
 A new Flutter project.
 
