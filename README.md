@@ -1,4 +1,4 @@
-# mdnotes
+# mynotes
 
 A new Flutter project.
 
