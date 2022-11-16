@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mdapp/constants/routes.dart';
+import 'package:mdapp/services/auth/auth_exceptions.dart';
+import 'package:mdapp/services/auth/auth_service.dart';
 import '../utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -51,53 +52,45 @@ class _LoginViewState extends State<LoginView> {
                 const InputDecoration(hintText: 'Enter your password here'),
           ),
           TextButton(
-            onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: email,
-                  password: password,
-                );
-                final user = FirebaseAuth.instance.currentUser;
-                if(user?.emailVerified ?? false){
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                  notesRoute,
-                  (route) => false,
-                );
-                }else{
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                  verifyEmailRoute,
-                  (route) => false,
-                );
-                }
-                
-              } on FirebaseAuthException catch (e) {
-                if (e.code == 'user-not-found') {
+              onPressed: () async {
+                final email = _email.text;
+                final password = _password.text;
+                try {
+                  await AuthService.firebase().login(
+                    email: email,
+                    password: password,
+                  );
+                  final user = AuthService.firebase().currentUser;
+                  if (user?.isEmailVerified ?? false) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute,
+                      (route) => false,
+                    );
+                  }
+                } on UserNotFoundAuthException {
                   await showErrorDialog(
                     context,
                     "User Not Found",
                   );
-                } else if (e.code == 'wrong-password') {
+                } on WrongPasswordAuthException {
                   await showErrorDialog(
                     context,
                     "Wrong Credentials",
                   );
-                } else {
+                } on GenericAuthException {
                   await showErrorDialog(
                     context,
-                    'Error :${e.code}',
+                    'Authentication Error',
                   );
                 }
-              } catch (e) {
-                await showErrorDialog(
-                  context,
-                  e.toString(),
-                );
-              }
-            },
-            child: const Text("Login"),
-          ),
+              },
+              child: const Text("Login")
+            ),
           TextButton(
               onPressed: () {
                 Navigator.of(context)
