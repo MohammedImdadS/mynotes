@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mdapp/constants/routes.dart';
 import 'package:mdapp/services/auth/auth_service.dart';
 import 'package:mdapp/views/login_view.dart';
-import 'package:mdapp/views/notes_view.dart';
+import 'package:mdapp/views/notes/new_note_view.dart';
+import 'package:mdapp/views/notes/notes_view.dart';
 import 'package:mdapp/views/register_view.dart';
 import 'package:mdapp/views/verify_email_view.dart';
 
@@ -11,7 +12,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
-      title: 'MD Bakery',
+      title: 'Notes',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -21,6 +22,7 @@ void main() {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
         verifyEmailRoute:(context) => const VerifyEmailView(),
+        newNoteRoute:(context) => const NewNoteView(),
       },
     ),
   );
