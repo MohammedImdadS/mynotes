@@ -69,7 +69,7 @@ class NotesService {
     // make sure note exists
     await getNote(id: note.id);
     // update db
-    final updateCount = await db.update(
+    final updatesCount = await db.update(
       noteTable,
       {
         textColumn: text,
@@ -78,13 +78,14 @@ class NotesService {
       where: 'id = ?',
       whereArgs: [note.id],
     );
-    if (updateCount == 0) {
+    if (updatesCount == 0) {
       throw CouldNotUpdateNote();
     } else {
-      final updateNote = await getNote(id: note.id);
-      _notes.removeWhere((note) => note.id == updateNote.id);
+      final updatedNote = await getNote(id: note.id);
+      _notes.removeWhere((note) => note.id == updatedNote.id);
+      _notes.add(updatedNote);
       _notesStreamController.add(_notes);
-      return updateNote;
+      return updatedNote;
     }
   }
 
@@ -176,7 +177,7 @@ class NotesService {
       where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
-    if (results.isNotEmpty) {
+    if (results.isEmpty) {
       throw CouldNotFindUser();
     } else {
       return DatabaseUser.fromRow(results.first);
