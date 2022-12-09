@@ -4,35 +4,53 @@ import 'package:mdapp/services/auth/auth_user.dart';
 
 @immutable
 abstract class AuthState {
-  const AuthState();
+  final bool isLoading;
+  final String? loadingText;
+  const AuthState({
+    required this.isLoading,
+    this.loadingText = 'Please wait a moment',
+  });
 }
 
 class AuthStateUninitialized extends AuthState {
-  const AuthStateUninitialized();
+  const AuthStateUninitialized({
+    required bool isloading,
+  }) : super(isLoading: isloading);
 }
 
 class AuthStateRegistering extends AuthState {
   final Exception? exception;
-  const AuthStateRegistering(this.exception);
+  const AuthStateRegistering({
+    required this.exception,
+    required isloading,
+  }) : super(isLoading: isloading);
 }
 
 class AuthStateLoggedIn extends AuthState {
   final AuthUser user;
-  const AuthStateLoggedIn(this.user);
+  const AuthStateLoggedIn({
+    required this.user,
+    required isloading,
+  }) : super(isLoading: isloading);
 }
 
 class AuthStateNeedsVerification extends AuthState {
-  const AuthStateNeedsVerification();
+  const AuthStateNeedsVerification({
+    required isloading,
+  }) : super(isLoading: isloading);
 }
 
-class AuthStateLoggedOut extends AuthState with EquatableMixin{
+class AuthStateLoggedOut extends AuthState with EquatableMixin {
   final Exception? exception;
-  final bool isLoading;
   const AuthStateLoggedOut({
     required this.exception,
-    required this.isLoading,
-  });
-  
+    required isLoading,
+    String? loadingText,
+  }) : super(
+          isLoading: isLoading,
+          loadingText: loadingText,
+        );
+
   @override
   List<Object?> get props => [exception, isLoading];
 }
