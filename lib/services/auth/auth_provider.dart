@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:mdapp/services/auth/auth_user.dart';
 
 abstract class AuthProvider{
@@ -13,4 +14,5 @@ abstract class AuthProvider{
   });
   Future<void> logOut();
   Future<void> sendEmailVerification();
+  Future<void> sendPasswordReset({required String toEmail});
 }
